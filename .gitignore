@@ -1,0 +1,7 @@
+/db/*
+/images/*
+apikeys.json
+config.json
+Gemfile.lock
+/plugins/**/**/config.json
+/plugins/commands/reactions/images.json

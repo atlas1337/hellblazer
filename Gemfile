@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+gem 'discordrb', git: 'https://github.com/meew0/discordrb.git', branch: 'master'
+gem 'jikan.rb'
+gem 'rmagick'
+gem 'rounding'
+gem 'sqlite3'
+gem 'yajl-ruby'

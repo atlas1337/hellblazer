@@ -1,0 +1,72 @@
+{
+  "prefix": [
+    "!",
+    "/cast ",
+    "⛧"
+  ],
+  "owners": [
+    111111111111111
+  ],
+  "perm_error": "You don't have permission to do that",
+  "dm_error": "You can't use this feature in a dm",
+  "choose_message": [
+    "I choose %{choice}!",
+    "I think %{choice} is awesome.",
+    "%{choice} sounds pretty cool to me!!",
+    "%{choice} has a nice ring to it.",
+    "You can't go wrong with %{choice}!!",
+    "The obvious answer is %{choice}.",
+    "%{choice} of course. Bruh, pls.",
+    "Tough call, but I'd have to go with %{choice}.",
+    "%{choice} is objectively superior.",
+    "%{choice} fills me with emotion.",
+    "I think %{choice} is the best.",
+    "Gotta be %{choice}.",
+    "Are you kidding? Definitely %{choice}.",
+    "%{choice}. How is this even a question?"
+  ],
+  "diceroller_coin": [
+    "You flipped heads.",
+    "You flipped tails."
+  ],
+  "diceroller_fudge": [
+    "+",
+    "-",
+    "blank"
+  ],
+  "eightball": [
+    "It is certain.",
+    "It is decidedly so.",
+    "Without a doubt.",
+    "Yes, definitely.",
+    "You may rely on it.",
+    "As I see it, yes.",
+    "Most likely.",
+    "Outlook good.",
+    "Yes.",
+    "Signs point to yes.",
+    "Reply hazy try again.",
+    "Ask again later.",
+    "Better not tell you now.",
+    "Cannot predict now.",
+    "Concentrate and ask again.",
+    "Don't count on it.",
+    "My reply is no.",
+    "My sources say no.",
+    "Outlook not so good.",
+    "Very doubtful."
+  ],
+  "embed_color": 2125188,
+  "embed_image_bandnames": "http://i.imgur.com/CHtw2iB.png",
+  "embed_image_emojicode": "",
+  "embed_image_play": "http://i.imgur.com/v6M4DWs.png",
+  "embed_image_quotes": "http://i.imgur.com/J1V9eGP.png",
+  "play_game_name": ":video_game: %{gamename} :video_game:",
+  "play_message": [
+    "The following game invite was sent:"
+  ],
+  "terms_of_service1": "```You must agree to the following terms of service:\n\n1. The Discord Terms of Service: https://discordapp.com/terms\n\n2. The Discord API Terms of Service: https://discordapp.com/developers/docs/legal\n\n3. __**Data Collection**__: This bot collects user input for certain commands, and stores it in a database. Do not enter any sensitive information into any of the commands.```",
+  "terms_of_service2": "```4. __**Rules of Conduct and Usage**__: The Service provides communication channels such as forums, communities, or chat areas (\"Communication Channels\") designed to enable you to communicate with other Service users. The Company has no obligation to monitor these communication channels but it may do so in connection with providing the Service.\n\nThe Creator may also terminate or suspend your access to any Communication Channels at any time, without notice, for any reason. You acknowledge that any user content (including without limitation chats, postings, or materials posted by users) on the Communication Channels is neither endorsed nor controlled by us. The Creator will not under any circumstances be liable for any activity within Communication Channels. The Creator is not responsible for information that you choose to share on the Communication Channels, or for the actions of other users.\n\nAs a condition of your use of the Service, and without limiting your other obligations under these Terms, you agree to comply with the restrictions and rules of use set forth in these Terms and our Community Guidelines as well as any additional restrictions or rules (such as application-specific rules) set forth in the Service.```",
+  "terms_of_service3": "```As an example, you agree not to use the Service in order to:\n\n* post, upload, transmit or otherwise disseminate information that is obscene, indecent, vulgar, pornographic, sexual or otherwise objectionable as outlined in our Community Guidelines;\n\n* defame, libel, ridicule, mock, stalk, threaten, harass, intimidate or abuse anyone;\n\n* upload or transmit (or attempt to upload or transmit) files that contain viruses, Trojan horses, worms, time bombs, cancelbots, corrupted files or data, or any other similar software or programs that may damage the operation of the Service or other users' computers;\n\n* violate the contractual, personal, intellectual property or other rights of any party including using, uploading, transmitting, distributing, or otherwise making available any information made available through the Service in any manner that infringes any copyright, trademark, patent, trade secret, or other right of any party (including rights of privacy or publicity);\n\n* attempt to obtain passwords or other private information from other members;\n\nThese rules of use are not meant to be exhaustive, and we reserve the right to determine what conduct we consider to be a violation of the Terms, Community Guidelines or improper use of the Service and to take action including termination of your Account and exclusion from further participation in the Service.```",
+  "terms_of_service4": "```5. __**Limitation of Liability**__: TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL THE CREATOR, BE LIABLE TO YOU OR TO ANY THIRD PERSON FOR ANY CONSEQUENTIAL, INCIDENTAL, SPECIAL, PUNITIVE OR OTHER INDIRECT DAMAGES, INCLUDING ANY LOST PROFITS OR LOST DATA, ARISING FROM YOUR USE OF THIS BOT OR OTHER MATERIALS ON, ACCESSED THROUGH OR DOWNLOADED FROM THE SERVICE, WHETHER BASED ON WARRANTY, CONTRACT, TORT, OR ANY OTHER LEGAL THEORY, AND WHETHER OR NOT THE CREATOR HAS BEEN ADVISED OF THE POSSIBILITY OF THESE DAMAGES.\n\nTHE CREATOR SHALL NOT BE LIABLE TO YOU FOR MORE THAN THE GREATER OF (A) THE AMOUNT YOU HAVE PAID TO US IN ACCORDANCE WITH THESE TERMS IN THE THREE (3) MONTHS IMMEDIATELY PRECEDING THE DATE ON WHICH YOU FIRST ASSERT A CLAIM. THE LIMITATIONS AND DISCLAIMERS IN THESE TERMS DO NOT PURPORT TO LIMIT LIABILITY OR ALTER RIGHTS THAT CANNOT BE EXCLUDED UNDER APPLICABLE LAW. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF IMPLIED WARRANTIES OR LIMITATION OF LIABILITY FOR INCIDENTAL OR CONSEQUENTIAL DAMAGES, WHICH MEANS THAT SOME OF THE ABOVE DISCLAIMERS AND LIMITATIONS MAY NOT APPLY TO YOU. IN THESE JURISDICTIONS, DISCORD’S LIABILITY WILL BE LIMITED TO THE GREATEST EXTENT PERMITTED BY LAW.\n\n You specifically acknowledge that the Creator shall not be liable for user content, including without limitation Your Content, or the defamatory, offensive, or illegal conduct of any third party and that the risk of harm or damage from the foregoing rests entirely with you.```"
+}
