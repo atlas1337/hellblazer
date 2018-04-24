@@ -49,7 +49,7 @@ module Hellblazer
         break if !Hellblazer.conf['owners'].include? event.user.id
 
         event.respond 'Updating and restarting!'
-        exec('update.sh')
+        exec("#{File.expand_path File.dirname(__FILE__)}/update.sh update")
       end
 
       command(
