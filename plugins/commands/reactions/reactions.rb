@@ -30,25 +30,21 @@ module Hellblazer
 
         textarray = args.join(' ').split('::')
         reaction = textarray[0].strip
-        url = textarray[1].strip
+        string_url = textarray[1].strip
+        url = URI.parse string_url
         accepted_formats = ['.jpg', '.jpeg', '.png', '.gif']
 
-        break event.respond 'Please use a direct link.' unless accepted_formats.any? { |format| url.include?(format) }
-
+        break event.respond 'Please use a direct link.' unless accepted_formats.include? File.extname(string_url)
         FileUtils.mkpath 'images/reactions/' + reaction unless File.exist?('images/reactions/' + reaction)
-        #download = open(url) unless !url.include? 'https://imgur.com/'
-        image_sites = ['https://imgur.com/', 'http://imgur.com/', 'http://i.imgur.com/']
-        file_name = ''
-        image_sites.each { |site|
-          file_name = url.gsub(site, '')
-        }
-        open('images/reactions/' + reaction + '/' + file_name, 'wb') do |file|
-          if !File.exist?(file)
-            file << open(url).read
-          else
-            event.respond 'That image already exists'
-          end
-        end
+        file_name = File.basename url.path 
+        if !File.exist?('images/reactions/' + reaction + '/' + file_name)
+	        open('images/reactions/' + reaction + '/' + file_name, 'wb') do |file|
+	            file << open(string_url).read
+	            event.respond 'Image has been added'
+	        end
+	    else
+	    	event.respond 'That image already exists'
+	    end
         nil
       end
 

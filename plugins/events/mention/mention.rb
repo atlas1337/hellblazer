@@ -1,7 +1,7 @@
 module Hellblazer
   module Plugins
     # Plugin to quote John Constantine
-    module Tableflip
+    module Mention
       extend Discordrb::EventContainer
 
       # Load config file
@@ -10,6 +10,8 @@ module Hellblazer
       )
 
       mention do |event|
+        event.channel.start_typing
+        sleep 5
         event.respond quotes['quotes'].sample
       end
     end

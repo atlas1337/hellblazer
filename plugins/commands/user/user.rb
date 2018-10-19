@@ -13,7 +13,7 @@ module Hellblazer
         usage: 'slap <user>'
       ) do |event, user|
         break unless check_tos(event, event.user.id) == true
-        break event.respond 'Entered content not allowed' if unallowed_input(user.join(' ')) == true
+        break event.respond 'Entered content not allowed' if unallowed_input(user) == true
         # Output a message from the choicemessage array in the config file,
         # and insert a random choice from the ones provided
         event.message.delete

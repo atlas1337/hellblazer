@@ -4,44 +4,54 @@ module Hellblazer
     module Emojicode
       extend Discordrb::Commands::CommandContainer
 
+      class Emojicode < ActiveRecord::Base
+        self.primary_key = :server_id
+      end
+
       command(
         :emojicode, max_args: 0,
         desc: "List of our emoji shorthand meanings",
         usage: "emojicode"
       ) do |event|
         break unless check_tos(event, event.user.id) == true
-        check_emojicode_table(event.server.id)
 
-        db = SQLite3::Database.new "db/#{event.server.id}.db"
-        emojicode = db.execute('SELECT emojicode_text FROM emojicode WHERE id = ?', 1)
-        emojicode = emojicode[0][0]
-        db.close if db
-
-        break event.respond 'There is no emojicode.' unless !emojicode.empty?
+        emojicode = Emojicode.where(server_id: event.server.id)
+        break event.respond 'This server has no Emoji Code.' if emojicode.empty?
 
         event.channel.send_embed do |e|
           e.thumbnail = { url: Hellblazer.conf['embed_image_emojicode'] }
           e.color = Hellblazer.conf['embed_color']
           e.title = 'Emoji Code'
-          e.description = emojicode
+          e.description = emojicode.first.emojicode_text
         end
       end
 
       command(
         %s(emojicode.set), min_args: 0,
-        desc: "Update emoji shorthand meanings",
-        usage: "emojicode.set"
+        desc: 'Update emoji shorthand meanings',
+        usage: 'emojicode.set'
       ) do |event|
         break unless check_tos(event, event.user.id) == true
         break unless event.server.member(event.user.id).defined_permission?(:administrator)
-        text = event.message.content[14..-1]
+        text = event.message.content[15..-1]
         event.message.delete
         break event.respond 'Entered content not allowed' if unallowed_input(text) == true
-        check_emojicode_table(event.server.id)
 
-        db = SQLite3::Database.new "db/#{event.server.id}.db"
-        db.execute('UPDATE emojicode SET emojicode_text = ? WHERE id = ?', text, 1)
-        db.close if db
+        emojicode = Emojicode.where(
+          server_id: event.server.id
+        )
+
+        if emojicode.empty?
+          Emojicode.create(
+            server_id: event.server.id,
+            emojicode_text: text
+          )
+        elsif !emojicode.empty?
+          emojicode.update(
+            event.server.id,
+            emojicode_text: text
+          )
+        end
 
         event.channel.send_embed do |e|
           e.thumbnail = { url: Hellblazer.conf['embed_image_emojicode'] }

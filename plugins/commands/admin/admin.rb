@@ -19,6 +19,14 @@ module Hellblazer
         end
         nil
       end
+
+      command(
+        %s(delete.me),
+        description: 'Remove your data from the bot',
+        usage: 'delete.me'
+      ) do |event|
+        nil
+      end
       # End of the agree command.
       command(
         %s(bot.avatar), min_args: 1, max_args: 1,
@@ -133,6 +141,34 @@ module Hellblazer
         end
         output += '```'
         event.user.pm(output)
+        nil
+      end
+
+      command(
+        %s(role.add), min_args: 2,
+        description: 'Assign a user a role',
+        usage: 'role @user @role'
+      ) do |event|
+		  break unless check_tos(event, event.user.id) == true
+		  break event << Hellblazer.conf['perm_error'] unless event.server.member(event.user.id).defined_permission?(:administrator)
+		  break event << 'Please enter at least one user' if event.message.mentions.nil?
+		  break event << 'Please enter at least one role' if event.message.role_mentions.nil?
+		  event.message.mentions.each do |user|
+		  	roles = []
+		  	role_names = []
+		  	event.message.role_mentions.each do |role|
+		  	  next if event.server.member(user.id).role?(role) == true
+		  	  roles << role
+		  	  role_names << role.name
+		  	end
+		  	if !roles.empty?
+		  	  event.server.member(user.id).add_role(roles)
+		  	  user.pm('You have been granted the role: ' + role_names[0] + ' on the server ' + event.server.name) if roles.size <= 1
+		  	  user.pm('You have been granted the roles: ' + role_names.join(', ') + ' on the server ' + event.server.name) if roles.size > 1
+		  	else
+		  	  event.user.pm('The user ' + user.name + ' already has all of those roles')
+		  	end
+		  end
         nil
       end
     end

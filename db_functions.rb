@@ -81,8 +81,8 @@ def check_poll_table(server_id)
   nil
 end
 
-def check_bandnames_table(server_id)
-  db = SQLite3::Database.new "db/#{server_id}.db"
+def check_bandnames_table
+  db = SQLite3::Database.new 'db/master.db'
   table = db.execute("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = ?", 'bandnames')
   if table[0][0] == 0
     # Create bandnames table
@@ -90,15 +90,18 @@ def check_bandnames_table(server_id)
       create table if not exists bandnames (
         name text,
         genre text,
-        addedby int,
-        UNIQUE(name)
+        added_by int,
+        server_id int,
+        server_name text,
       );
     SQL
 
     query = [
-      'ALTER TABLE bandnames ADD COLUMN name text, UNIQUE(name)',
+      'ALTER TABLE bandnames ADD COLUMN name text',
       'ALTER TABLE bandnames ADD COLUMN genre text',
-      'ALTER TABLE bandnames ADD COLUMN addedby text'
+      'ALTER TABLE bandnames ADD COLUMN added_by int',
+      'ALTER TABLE bandnames ADD COLUMN server_id int',
+      'ALTER TABLE bandnames ADD COLUMN server_name text'
     ]
     query.each do |q|
       begin
@@ -112,8 +115,8 @@ def check_bandnames_table(server_id)
   nil
 end
 
-def check_quotes_table(server_id)
-  db = SQLite3::Database.new "db/#{server_id}.db"
+def check_quotes_table
+  db = SQLite3::Database.new 'db/master.db'
   table = db.execute("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = ?", 'quotes')
   if table[0][0] == 0
     # Create quotes table
@@ -121,13 +124,16 @@ def check_quotes_table(server_id)
       create table if not exists quotes (
         quote text,
         added_by int,
-        UNIQUE(quote)
+        server_id int,
+        server_name text
       );
     SQL
 
     query = [
-      'ALTER TABLE quotes ADD COLUMN quote text, UNIQUE(quote)',
-      'ALTER TABLE quotes ADD COLUMN added_by text'
+      'ALTER TABLE quotes ADD COLUMN quote text',
+      'ALTER TABLE quotes ADD COLUMN added_by int',
+      'ALTER TABLE quotes ADD COLUMN server_id int',
+      'ALTER TABLE quotes ADD COLUMN server_name text'
     ]
     query.each do |q|
       begin
@@ -141,22 +147,21 @@ def check_quotes_table(server_id)
   nil
 end
 
-def check_emojicode_table(server_id)
-  db = SQLite3::Database.new "db/#{server_id}.db"
+def check_emojicode_table
+  db = SQLite3::Database.new 'db/master.db'
   table = db.execute("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = ?", 'emojicode')
   if table[0][0] == 0
     # Create emojicode table
     db.execute <<-SQL
       create table if not exists emojicode (
-        id int,
-        emojicode_text blob,
-        UNIQUE(id)
+        server_id int,
+        emojicode_text text
       );
     SQL
 
     query = [
-      'ALTER TABLE emojicode ADD COLUMN id int, UNIQUE(id)',
-      'ALTER TABLE emojicode ADD COLUMN emojicode_text blob'
+      'ALTER TABLE emojicode ADD COLUMN server_id int',
+      'ALTER TABLE emojicode ADD COLUMN emojicode_text text'
     ]
     query.each do |q|
       begin
@@ -165,8 +170,37 @@ def check_emojicode_table(server_id)
         next
       end
     end
-    db.execute('INSERT OR IGNORE INTO emojicode (id) '\
-               'VALUES (?)', 1)
+  end
+  db.close if db
+  nil
+end
+
+def check_reminders_table
+  db = SQLite3::Database.new "db/master.db"
+  table = db.execute("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = ?", 'reminders')
+  if table[0][0] == 0
+    # Create emojicode table
+    db.execute <<-SQL
+      create table if not exists reminders (
+        id INTEGER PRIMARY KEY,
+        reminder text,
+        user int,
+        remind_time text
+      );
+    SQL
+
+    query = [
+      'ALTER TABLE reminders ADD COLUMN reminder text',
+      'ALTER TABLE reminders ADD COLUMN user int',
+      'ALTER TABLE reminders ADD COLUMN remind_time text'
+    ]
+    query.each do |q|
+      begin
+        db.execute(q)
+      rescue SQLite3::Exception
+        next
+      end
+    end
   end
   db.close if db
   nil

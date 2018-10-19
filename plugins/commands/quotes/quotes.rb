@@ -5,19 +5,19 @@ module Hellblazer
 
       extend Discordrb::Commands::CommandContainer
 
+      class Quotes < ActiveRecord::Base
+      end
+
       command(
         :quote, max_args: 0,
         description: 'Output a random quote, or manage quotes.',
         usage: 'quote'
       ) do |event|
         break unless check_tos(event, event.user.id) == true
-        check_quotes_table(event.server.id)
-        # Load database
-        db = SQLite3::Database.new "db/#{event.server.id}.db"
-        rows = db.execute('SELECT quote FROM quotes')
-        db.close if db
 
-        output = rows.sample.sample.to_s unless rows.empty?
+        rows = Quotes.where(server_id: event.server.id)
+
+        output = rows.sample.quote unless rows.empty?
         output = 'There are no quotes.' if rows.empty?
 
         event.channel.send_embed do |e|
@@ -33,21 +33,19 @@ module Hellblazer
         usage: 'quote.add <text>'
       ) do |event, *text|
         break unless check_tos(event, event.user.id) == true
-        check_quotes_table(event.server.id)
         event.message.delete
         break event.respond 'Entered content not allowed' if unallowed_input(text.join(' ')) == true
 
-        begin
-          db = SQLite3::Database.new "db/#{event.server.id}.db"
-          db.execute(
-            'INSERT INTO quotes (quote, added_by) '\
-            'VALUES (?, ?)', text.join(' '), event.user.id
-          )
-          db.close if db
-        rescue SQLite3::Exception => e
-          event.respond 'That quote already exists.'
-          break
-        end
+        check = Quotes.where(quote: text.join(' '), server_id: event.server.id)
+        break event.respond 'That quote already exists.' unless check.empty?
+
+        quotes = Quotes.create(
+          quote: text.join(' '),
+          added_by: event.user.id,
+          server_id: event.server.id,
+          server_name: event.server.name
+        )
+        quotes.save
 
         event.channel.send_embed do |embed|
           embed.thumbnail = { url: Hellblazer.conf['embed_image_quotes'] }
@@ -65,17 +63,15 @@ module Hellblazer
         usage: 'quote.remove <text>'
       ) do |event, *text|
         break unless check_tos(event, event.user.id) == true
-        break if !BruhBot.conf['owners'].include? event.user.id
-        check_quotes_table(event.server.id)
+        break if !Hellblazer.conf['owners'].include? event.user.id
         event.message.delete
 
-        db = SQLite3::Database.new "db/#{event.server.id}.db"
-        check = db.execute('SELECT count(*) FROM quotes '\
-                           'WHERE quote = ?', text.join(' '))[0][0]
-        break event.respond 'That quote doesn\'t exist.' unless check == 1
-
-        db.execute('DELETE FROM quotes WHERE quote = ?', [text.join(' ')])
-        db.close if db
+        check = Quotes.where(quote: text.join(' '), server_id: event.server.id)
+        break event.respond 'That quote Doesn\'t exist.' unless !check.empty?
+        Quotes.where(
+          quote: text.join(' '),
+          server_id: event.server.id
+        ).delete_all
 
         event.channel.send_embed do |e|
           e.thumbnail = { url: Hellblazer.conf['embed_image_quotes'] }
@@ -83,7 +79,7 @@ module Hellblazer
           e.add_field name: 'Quote:', value: text.join(' '), inline: false
           e.add_field name: 'Removed By:', value: event.user.mention,\
                       inline: false
-          e.color = embed.color = Hellblazer.conf['embed_color']
+          e.color = Hellblazer.conf['embed_color']
         end
       end
     end
