@@ -1,0 +1,13 @@
+version: '3.7'
+
+volumes:
+  db:
+
+services:
+
+  hellblazer:
+    image: hellblazer:latest
+    restart: always
+
+    volumes:
+      - ./db:/usr/app/db

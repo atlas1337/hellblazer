@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-require 'active_record'
 require 'discordrb'
 require 'fileutils'
 require 'sqlite3'
@@ -20,20 +19,13 @@ module Hellblazer
     attr_accessor :reminder_running
   end
 
-  ActiveRecord::Base.establish_connection(
-    :adapter=> 'sqlite3',
-    :host => 'localhost',
-    :database=> 'db/master.db'
-  )
-  ActiveRecord::Base.pluralize_table_names = false
-
   $LOAD_PATH << File.join(File.dirname(__FILE__))
 
   self.conf = Yajl::Parser.parse(File.new('config.json', 'r'))
   self.api = Yajl::Parser.parse(File.new('apikeys.json', 'r'))
   self.bot = Discordrb::Commands::CommandBot.new(
     token: api['discord_token'],
-    client_id: api['discord_app_id'],
+    client_id: api['client_id'],
     prefix: conf['prefix']
   )
   self.started = false
@@ -54,6 +46,7 @@ module Hellblazer
   # Configure a database for each connected server.
     bot.ready do |event|
       if self.started == false
+        check_tos_table
         check_reminders_table
         check_bandnames_table
         check_quotes_table

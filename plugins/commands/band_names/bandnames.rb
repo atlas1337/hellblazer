@@ -4,9 +4,6 @@ module Hellblazer
     module BandNames
       extend Discordrb::Commands::CommandContainer
 
-      class Bandnames < ActiveRecord::Base
-      end
-
       command(
         :band, min_args: 0,
         description: 'Display a random band name.',
@@ -14,15 +11,23 @@ module Hellblazer
       ) do |event|
         break unless check_tos(event, event.user.id) == true
 
-        rows = Bandnames.where(server_id: event.server.id)
+        # Load database
+        db = SQLite3::Database.new 'db/master.db'
+        rows = db.execute('SELECT name, genre, added_by FROM bandnames WHERE server_id = ?', event.server.id)
+        db.close if db
+
         output = rows.sample unless rows.empty?
 
         break event.respond 'There are no bands.' if rows.empty?
         user = event.bot.member(event.server.id, event.user.id).display_name
-        response = "#{output.name} is #{user}'s new band name." if output.genre.nil?
-        response = "#{output.name} is #{user}'s new #{output.genre} band name." unless output.genre.nil?
+        response = "#{output[0]} is #{user}'s new band name." if output[1].nil? || output.empty?
+        response = "#{output[0]} is #{user}'s new #{output[1]} band name." unless output[1].nil? || output.empty?
 
-        creator = event.bot.member(event.server.id, output.added_by).display_name
+        if output[2].to_s.numeric?
+          creator = event.bot.member(event.server.id, output[2].to_i).display_name
+        else
+          creator = output[2]
+        end
 
         event.channel.send_embed do |e|
           e.thumbnail = { url: Hellblazer.conf['embed_image_bandnames'] }
@@ -49,17 +54,17 @@ module Hellblazer
         genre = nil if textarray[1].nil? || textarray[1] == ' '
         user = event.user.id
 
-        check = Bandnames.where(name: band, server_id: event.server.id)
-        break event.respond 'That band already exists.' unless check.empty?
-
-        bandname = Bandnames.create(
-          name: band,
-          genre: genre,
-          added_by: event.user.id,
-          server_id: event.server.id,
-          server_name: event.server.name
-        )
-        bandname.save
+        db = SQLite3::Database.new 'db/master.db'
+		begin
+          db.execute(
+            'INSERT INTO bandnames (name, genre, added_by, server_id, server_name) '\
+            'VALUES (?, ?, ?, ?, ?)', band, genre, user, event.server.id, event.server.name
+          )
+        rescue SQLite3::Exception
+          event.respond 'That band name already exists.'
+          break
+        end
+        db.close if db
 
         genre = 'N/A' if genre.nil?
 
@@ -83,12 +88,13 @@ module Hellblazer
         break if !Hellblazer.conf['owners'].include? event.user.id
         event.message.delete
 
-        check = Bandnames.where(name: text.join(' '), server_id: event.server.id)
-        break event.respond 'That band Doesn\'t exist.' unless !check.empty?
-        Bandnames.where(
-          name: text.join(' '),
-          server_id: event.server.id
-        ).delete_all
+        db = SQLite3::Database.new 'db/master.db'
+        check = db.execute('SELECT count(*) FROM bandnames '\
+                           'WHERE name = ? AND server_id = ?', text.join(' '), event.server.id)[0][0]
+        break event.respond 'That band doesn\'t exist.' unless check == 1
+
+        db.execute('DELETE FROM bandnames WHERE name = ? AND server_id = ?', text.join(' '), event.server.id)
+        db.close if db
 
         event.channel.send_embed do |e|
           e.thumbnail = { url: Hellblazer.conf['embed_image_bandnames'] }

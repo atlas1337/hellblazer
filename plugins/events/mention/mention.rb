@@ -4,15 +4,10 @@ module Hellblazer
     module Mention
       extend Discordrb::EventContainer
 
-      # Load config file
-      quotes = Yajl::Parser.parse(
-        File.new("#{__dir__}/config.json", 'r')
-      )
-
       mention do |event|
         event.channel.start_typing
         sleep 5
-        event.respond quotes['quotes'].sample
+        event.respond Hellblazer.conf['mention_text'].sample
       end
     end
   end

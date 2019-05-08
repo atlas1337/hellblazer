@@ -31,13 +31,44 @@ def check_tos(event, user_id)
   db.close if db
 end
 
+def check_tos_table
+  db = SQLite3::Database.new 'db/master.db'
+  table = db.execute("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = ?", 'terms_of_service')
+  if table[0][0] == 0
+    db.execute <<-SQL
+      create table if not exists terms_of_service (
+        user_id int,
+        tos_sent text,
+        accepted text,
+        accepted_date date,
+        UNIQUE(user_id)
+      );
+    SQL
+
+    query = [
+      'ALTER TABLE poll ADD COLUMN user_id int, UNIQUE(user_id)',
+      'ALTER TABLE poll ADD COLUMN tos_sent text',
+      'ALTER TABLE poll ADD COLUMN accepted text',
+      'ALTER TABLE poll ADD COLUMN accepted_date date'
+    ]
+    query.each do |q|
+      begin
+        db.execute(q)
+      rescue SQLite3::Exception
+        next
+      end
+    end
+  end
+end
+
 def check_poll_table(server_id)
-  db = SQLite3::Database.new "db/#{server_id}.db"
+  db = SQLite3::Database.new "db/master.db"
   table = db.execute("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = ?", 'poll')
   if table[0][0] == 0
     db.execute <<-SQL
-      create table if not exists poll (
+      create table if not exists polls (
         id int,
+		server_id int,
         channel_id int,
         user_id int,
         started int,
@@ -51,6 +82,7 @@ def check_poll_table(server_id)
 
     db.execute <<-SQL
       create table if not exists poll_voters (
+	    server_id int,
         userid int,
         voted int,
         UNIQUE(userid)
@@ -58,14 +90,15 @@ def check_poll_table(server_id)
     SQL
 
     query = [
-      'ALTER TABLE poll ADD COLUMN id int, UNIQUE(id)',
-      'ALTER TABLE poll ADD COLUMN channel_id int',
-      'ALTER TABLE poll ADD COLUMN user_id int',
-      'ALTER TABLE poll ADD COLUMN started integer',
-      'ALTER TABLE poll ADD COLUMN option text',
-      'ALTER TABLE poll ADD COLUMN votes integer',
-      'ALTER TABLE poll ADD COLUMN poll_time integer',
-      'ALTER TABLE poll ADD COLUMN elapsed_time integer',
+      'ALTER TABLE polls ADD COLUMN id int, UNIQUE(id)',
+	  'ALTER TABLE polls ADD COLUMN server_id int',
+      'ALTER TABLE polls ADD COLUMN channel_id int',
+      'ALTER TABLE polls ADD COLUMN user_id int',
+      'ALTER TABLE polls ADD COLUMN started integer',
+      'ALTER TABLE polls ADD COLUMN option text',
+      'ALTER TABLE polls ADD COLUMN votes integer',
+      'ALTER TABLE polls ADD COLUMN poll_time integer',
+      'ALTER TABLE polls ADD COLUMN elapsed_time integer',
       'ALTER TABLE poll_voters ADD COLUMN userid int, UNIQUE(userid)',
       'ALTER TABLE poll_voters ADD COLUMN voted integer'
     ]
@@ -92,7 +125,7 @@ def check_bandnames_table
         genre text,
         added_by int,
         server_id int,
-        server_name text,
+        server_name text
       );
     SQL
 

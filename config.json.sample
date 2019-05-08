@@ -9,6 +9,10 @@
   ],
   "perm_error": "You don't have permission to do that",
   "dm_error": "You can't use this feature in a dm",
+  "mention_text": [
+    "I'm the one who steps from the shadows, all trenchcoat and cigarette and arrogance, ready to deal with the madness. Oh, I've got it all sewn up. I can save you. If it takes the last drop of your blood, I'll drive your demons away. I'll kick them in the bollocks and spit on them when they're down and then I'll be gone back into darkness, leaving only a nod and a wink and a wisecrack. I walk my path alone... who would walk with me?",
+    "Few people really think about dying... paranoids worry about it without really understanding it. Victims of fatal accidents and murder don't have time to think. You only really think about it if you take the time to. And you only take the time if you know it's going to happen."
+  ],
   "choose_message": [
     "I choose %{choice}!",
     "I think %{choice} is awesome.",

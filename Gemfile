@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
-gem 'activerecord'
-gem 'discordrb', git: 'https://github.com/meew0/discordrb.git', branch: 'master'
+gem 'bigdecimal'
+gem 'discordrb'
 gem 'jikan.rb'
 gem 'rounding'
 gem 'ruby_blizzard', :git => 'https://github.com/atlas1337/RubyBlizzard.git'
