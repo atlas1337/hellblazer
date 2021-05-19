@@ -5,3 +5,5 @@ config.json
 Gemfile.lock
 /plugins/**/**/config.json
 /plugins/commands/reactions/images.json
+/.bundle/*
+/bundle/*
