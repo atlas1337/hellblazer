@@ -4,16 +4,15 @@ Hellblazer is a chatbot for use with the Discord chat service.
 
 Dependencies
 ------------
-* Ruby 2.1+
+* Ruby 2.7+
 * [Bundler](https://github.com/bundler/bundler) Ruby Gem Bundler.
-* Image Magick
 
 Other dependencies are listed in the Gemfile.
 
 Installation - Linux
 ------------
 1. Install dependencies using the command:
-       `sudo apt-get install git imagemagick libmagickwand-dev`
+       `sudo apt-get install git`
 
 2. Run the command:
       `git clone https://github.com/atlas1337/hellblazer.git yourfoldername`
