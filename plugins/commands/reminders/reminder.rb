@@ -2,8 +2,10 @@ module Hellblazer
   module Plugins
     # Quotes Plugin
     module Reminders
-
       extend Discordrb::Commands::CommandContainer
+      require_relative('reminder_db.rb')
+      check_reminders_table
+      reminderLoop
 
       command(
         %s(remind.me),

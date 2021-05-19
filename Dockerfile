@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM ruby:2.7.3-alpine
 
 #Install Base
 RUN apk update
@@ -6,7 +6,7 @@ RUN apk upgrade
 RUN apk add curl wget bash
 
 #Install Dev Dependencies
-RUN apk add gcc g++ libpng-dev make libxslt-dev libxml2-dev zlib-dev sqlite-dev
+RUN apk add gcc g++ libpng-dev make libxslt-dev libxml2-dev zlib-dev sqlite-dev libsodium
 
 #Install ruby, rdoc, and dev kit
 RUN apk add ruby ruby-rdoc ruby-dev
@@ -26,7 +26,8 @@ WORKDIR /usr/app
 #Copy Gemfile and install Gems
 COPY Gemfile /usr/app/
 COPY Gemfile.lock /usr/app/
-RUN gem install bundler
+RUN gem install bundler -v 2.1.4
+RUN bundle config set path 'bundle'
 RUN bundle install
 
 COPY . /usr/app

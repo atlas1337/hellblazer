@@ -14,7 +14,8 @@ module Hellblazer
           time = Time.new
           db.execute('UPDATE terms_of_service SET accepted = ? WHERE user_id = ?', 'true', event.user.id)
           db.execute('UPDATE terms_of_service SET accepted_date = ? WHERE user_id = ?', time.inspect, event.user.id)
-          event.user.pm('You may now use the bot.')
+          event.user.pm('You may now use the bot. If you wish to remove your content from the bot in the future ' \
+		                'run the command !delete.me')
           db.close if db
         end
         nil
@@ -25,9 +26,37 @@ module Hellblazer
         description: 'Remove your data from the bot',
         usage: 'delete.me'
       ) do |event|
+        db = SQLite3::Database.new 'db/master.db'
+        db.execute('DELETE FROM bandnames WHERE added_by = ?', event.user.id)
+		db.execute('DELETE FROM quotes WHERE added_by = ?', event.user.id)
+		db.execute('DELETE FROM reminders WHERE user = ?', event.user.id)
+        db.close if db
+		event.user.pm('Your data has been removed from the database.')
+      end
+      # End of the delete.me command.
+
+      command(
+        :prefix, min_args: 1,
+        required_permissions: [:manage_server],
+        permission_message: 'You don\'t have permission to use this command',
+        description: 'Set the bot prefix for your server',
+        usage: 'prefix !'
+      ) do |event, prefix|
+        break unless check_tos(event, event.user.id) == true
+        db = SQLite3::Database.new 'db/master.db'
+        begin
+          db.execute(
+            'REPLACE INTO bot_prefix (server_id, prefix) '\
+            'VALUES (?, ?)', event.server.id, prefix.strip
+          )
+        rescue SQLite3::Exception
+          event.respond 'Something went wrong here...'
+          break
+        end
+        db.close if db
         nil
       end
-      # End of the agree command.
+
       command(
         %s(bot.avatar), min_args: 1, max_args: 1,
         description: 'Update the bot\'s avatar.',
@@ -99,7 +128,7 @@ module Hellblazer
       end
 
       command(
-        :game, min_args: 1,
+        :status, min_args: 1,
         description: 'sets bot game'
       ) do |event, *game|
         event.message.delete

@@ -6,7 +6,7 @@ module Hellblazer
       extend Discordrb::Commands::CommandContainer
 
       command(
-        :play, min_args: 2,
+        :game, min_args: 2,
         description: 'Invite groups to play a game.',
         usage: 'play <gamename>, <groupname>'
       ) do |event, *text|

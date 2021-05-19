@@ -2,8 +2,9 @@ module Hellblazer
   module Plugins
     # Quotes Plugin
     module Quotes
-
       extend Discordrb::Commands::CommandContainer
+      require_relative('quotes_db.rb')
+      check_quotes_table
 
       command(
         :quote, max_args: 0,

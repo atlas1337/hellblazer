@@ -3,6 +3,8 @@ module Hellblazer
     # Emojicode plugin
     module Emojicode
       extend Discordrb::Commands::CommandContainer
+      require_relative('emojicode_db.rb')
+      check_emojicode_table
 
       command(
         :emojicode, max_args: 0,

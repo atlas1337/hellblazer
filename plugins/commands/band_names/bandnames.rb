@@ -3,6 +3,9 @@ module Hellblazer
     # Band names plugin
     module BandNames
       extend Discordrb::Commands::CommandContainer
+      require_relative('bandnames_db.rb')
+
+      check_bandnames_table
 
       command(
         :band, min_args: 0,
